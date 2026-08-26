@@ -8,6 +8,12 @@ interface FormData {
   sellingDetail: string;
 }
 
+interface FormErrors {
+  fullName?: string;
+  phone?: string;
+  email?: string;
+}
+
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
@@ -17,8 +23,45 @@ export const Contact: React.FC = () => {
     sellingDetail: '',
   });
 
+  const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const validateForm = (data: FormData): FormErrors => {
+    const errs: FormErrors = {};
+
+    // 1. Full Name Validation: no digits allowed, minimum 2 characters
+    const name = data.fullName.trim();
+    if (!name) {
+      errs.fullName = 'Full name is required';
+    } else if (/\d/.test(name)) {
+      errs.fullName = 'Full name cannot contain numbers';
+    } else if (!/^[a-zA-Z\s'.\-]{2,60}$/.test(name)) {
+      errs.fullName = 'Please enter a valid name (letters only)';
+    }
+
+    // 2. Phone Validation: no alphabetic/email characters, 7-15 digits
+    const phone = data.phone.trim();
+    const digitsOnly = phone.replace(/\D/g, '');
+    if (!phone) {
+      errs.phone = 'Phone number is required';
+    } else if (/[a-zA-Z@]/.test(phone)) {
+      errs.phone = 'Phone cannot contain letters or email format';
+    } else if (digitsOnly.length < 7 || digitsOnly.length > 15) {
+      errs.phone = 'Please enter a valid phone number (7 to 15 digits)';
+    }
+
+    // 3. Email Validation: valid email format required
+    const email = data.email.trim();
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!email) {
+      errs.email = 'Email address is required';
+    } else if (!emailRegex.test(email)) {
+      errs.email = 'Please enter a valid email address (e.g. name@company.com)';
+    }
+
+    return errs;
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -28,12 +71,26 @@ export const Contact: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Clear error for this field as user types
+    if (errors[name as keyof FormErrors]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
 
+    const formErrors = validateForm(formData);
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
+    }
+
+    setSubmitting(true);
     const sheetUrl = import.meta.env.VITE_LEADS_SHEET_URL;
 
     try {
@@ -98,7 +155,7 @@ export const Contact: React.FC = () => {
               </div>
             </div>
           ) : (
-            <form className="contact-form" onSubmit={handleSubmit}>
+            <form className="contact-form" onSubmit={handleSubmit} noValidate>
               <div className="form-row">
                 <div className="field">
                   <label htmlFor="fname">Full name</label>
@@ -109,8 +166,10 @@ export const Contact: React.FC = () => {
                     placeholder="Your name"
                     value={formData.fullName}
                     onChange={handleChange}
+                    className={errors.fullName ? 'has-error' : ''}
                     required
                   />
+                  {errors.fullName && <span className="field-error">{errors.fullName}</span>}
                 </div>
                 <div className="field">
                   <label htmlFor="fphone">Phone</label>
@@ -121,8 +180,10 @@ export const Contact: React.FC = () => {
                     placeholder="Your number"
                     value={formData.phone}
                     onChange={handleChange}
+                    className={errors.phone ? 'has-error' : ''}
                     required
                   />
+                  {errors.phone && <span className="field-error">{errors.phone}</span>}
                 </div>
               </div>
               <div className="field" style={{ marginBottom: '16px' }}>
@@ -134,8 +195,10 @@ export const Contact: React.FC = () => {
                   placeholder="you@company.com"
                   value={formData.email}
                   onChange={handleChange}
+                  className={errors.email ? 'has-error' : ''}
                   required
                 />
+                {errors.email && <span className="field-error">{errors.email}</span>}
               </div>
               <div className="field" style={{ marginBottom: '16px' }}>
                 <label htmlFor="fspend">Current monthly ad spend</label>
