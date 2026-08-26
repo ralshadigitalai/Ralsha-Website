@@ -227,9 +227,9 @@ export const Contact: React.FC = () => {
                   onChange={handleChange}
                 >
                   <option value="Not spending on ads yet">Not spending on ads yet</option>
-                  <option value="Under $2,000 / month">Under $2,000 / month</option>
-                  <option value="$2,000 – $10,000 / month">$2,000 – $10,000 / month</option>
-                  <option value="$10,000+ / month">$10,000+ / month</option>
+                  <option value="Under ₹1,50,000 / month">Under ₹1,50,000 / month</option>
+                  <option value="₹1,50,000 – ₹8,00,000 / month">₹1,50,000 – ₹8,00,000 / month</option>
+                  <option value="₹8,00,000+ / month">₹8,00,000+ / month</option>
                 </select>
               </div>
               <div className="field" style={{ marginBottom: '20px' }}>

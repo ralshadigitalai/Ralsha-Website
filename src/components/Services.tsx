@@ -50,7 +50,7 @@ export const Services: React.FC = () => {
               />
             </div>
             <div className="visual-foot">
-              <span>SPEND $12,480</span>
+              <span>SPEND ₹1,25,000</span>
               <span>ROAS 4.6x</span>
             </div>
           </div>
