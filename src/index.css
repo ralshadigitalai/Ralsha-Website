@@ -1,4 +1,5 @@
 :root{
+  color-scheme: dark;
   --navy-950:#060d20;
   --navy-900:#0a1530;
   --navy-800:#0f1e42;
@@ -208,6 +209,14 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:20px;}
   background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);border-radius:10px;
   padding:12px 14px;color:#fff;font-family:'Inter',sans-serif;font-size:14px;outline:none;
   transition:border-color .2s ease, background .2s ease;
+}
+.field select {
+  color-scheme: dark !important;
+}
+.field select option {
+  background-color: #0a1530 !important;
+  color: #ffffff !important;
+  padding: 10px;
 }
 .field input.has-error, .field select.has-error, .field textarea.has-error {
   border-color: #ff6b6b !important;
