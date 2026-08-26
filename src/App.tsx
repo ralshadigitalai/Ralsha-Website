@@ -6,6 +6,7 @@ import { Process } from './components/Process';
 import { WhoItsFor } from './components/WhoItsFor';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
+import { LoadingScreen } from './components/LoadingScreen';
 import { useScrollReveal } from './hooks/useScrollReveal';
 
 export const App: React.FC = () => {
@@ -13,6 +14,7 @@ export const App: React.FC = () => {
 
   return (
     <>
+      <LoadingScreen />
       <Nav />
       <Hero />
       <Services />
