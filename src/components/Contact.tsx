@@ -103,6 +103,13 @@ export const Contact: React.FC = () => {
 
     setSubmitting(true);
     const sheetUrl = import.meta.env.VITE_LEADS_SHEET_URL;
+    const apiKey = import.meta.env.VITE_LEADS_API_KEY || '';
+
+    const payload = {
+      ...formData,
+      submittedAt: new Date().toISOString(),
+      apiKey,
+    };
 
     try {
       if (sheetUrl && sheetUrl !== 'PLACEHOLDER') {
@@ -111,7 +118,7 @@ export const Contact: React.FC = () => {
           headers: {
             'Content-Type': 'text/plain;charset=utf-8',
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         });
       }
     } catch (err) {
