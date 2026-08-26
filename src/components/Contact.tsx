@@ -66,7 +66,18 @@ export const Contact: React.FC = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
+    let value = e.target.value;
+
+    // Strict input filtering on keystroke
+    if (name === 'phone') {
+      // Physically block any non-numeric/non-phone symbol (letters, @, etc.)
+      value = value.replace(/[^0-9+\s\-()]/g, '');
+    } else if (name === 'fullName') {
+      // Physically block any digits/numbers in full name
+      value = value.replace(/[0-9]/g, '');
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
