@@ -271,9 +271,9 @@ footer{background:#050b1c;padding:70px 0 28px;border-top:1px solid rgba(255,255,
   .contact-form{border-left:none;border-top:1px solid rgba(255,255,255,0.08);}
 }
 
-/* ALL MOBILE STYLES - CENTER FOCUSED (Max width 850px) */
+/* ALL MOBILE STYLES - TIGHT SPACING & CENTER FOCUSED (Max width 850px) */
 @media (max-width:850px){
-  /* Header Nav */
+  /* Navigation Header */
   .nav-links, .nav-right{display:none !important;}
   .menu-btn{display:flex !important;align-items:center;justify-content:center;}
   .wrap{padding:0 20px;}
@@ -321,176 +321,227 @@ footer{background:#050b1c;padding:70px 0 28px;border-top:1px solid rgba(255,255,
     width: 100%;
   }
 
-  /* Hero Section - Center Focused */
+  /* Hero Section - Tight Padding & Center Focused */
   .hero{
-    padding-top:130px !important;
-    text-align:center !important;
+    padding: 110px 0 36px !important;
+    text-align: center !important;
   }
   .hero-inner{
-    margin:0 auto !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    text-align:center !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
   }
   .eyebrow{
-    justify-content:center !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
-    text-align:center !important;
+    justify-content: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+    margin-bottom: 12px !important;
   }
   .hero h1{
-    text-align:center !important;
+    text-align: center !important;
+    margin-bottom: 16px !important;
   }
   .hero p.lead{
-    text-align:center !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 24px !important;
   }
   .hero-cta{
-    justify-content:center !important;
-    width:100% !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin-bottom: 28px !important;
   }
   .hero-tags{
-    justify-content:center !important;
-    width:100% !important;
+    justify-content: center !important;
+    width: 100% !important;
   }
 
-  /* Section Headings - Center Focused */
+  /* Section Headings - Tight Margin & Center Focused */
   .section-head{
-    text-align:center !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 32px !important;
   }
   .section-head p{
-    margin-left:auto !important;
-    margin-right:auto !important;
-    text-align:center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
   }
 
-  /* Services Section - Center Focused */
-  .services,.process,.who{padding:80px 0;}
-  .service-row{grid-template-columns:1fr;gap:32px;text-align:center;}
+  /* Services Section - Tight Padding & Center Focused */
+  .services, .process, .who{
+    padding: 44px 0 !important;
+  }
+  .service-row{
+    grid-template-columns: 1fr;
+    gap: 24px !important;
+    padding: 28px 0 !important;
+    text-align: center;
+  }
   .service-row.reverse .service-text{order:1;}
   .service-row.reverse .service-visual{order:2;}
   .service-text{
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    text-align:center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
   }
   .service-index{
-    text-align:center !important;
-    display:block !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
+    text-align: center !important;
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 10px !important;
   }
   .service-text h3{
-    text-align:center !important;
+    text-align: center !important;
+    margin-bottom: 12px !important;
   }
   .service-text p{
-    margin-left:auto !important;
-    margin-right:auto !important;
-    text-align:center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+    margin-bottom: 16px !important;
   }
   .service-pills{
-    justify-content:center !important;
+    justify-content: center !important;
+  }
+  .service-visual{
+    min-height: 220px !important;
+    padding: 16px !important;
   }
 
-  /* Process Section - Center Focused */
-  .process-grid{grid-template-columns:1fr;}
+  /* Process Section - Tight Spacing & Center Focused */
+  .process-grid{
+    grid-template-columns: 1fr;
+    gap: 16px !important;
+  }
   .process-card{
-    text-align:center !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 20px 18px !important;
   }
   .process-num{
-    margin-left:auto !important;
-    margin-right:auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 12px !important;
   }
 
-  /* Who It's For Section - Center Focused */
-  .who-grid,.who-cols{grid-template-columns:1fr;}
+  /* Who It's For Section - Tight Spacing & Center Focused */
+  .who-grid{
+    grid-template-columns: 1fr;
+    gap: 14px !important;
+    margin-bottom: 18px !important;
+  }
+  .who-cols{
+    grid-template-columns: 1fr;
+    gap: 20px !important;
+  }
   .who-tile{
-    justify-content:center !important;
-    text-align:center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    aspect-ratio: 16/9 !important;
+    min-height: 130px !important;
   }
   .who-col{
-    text-align:center !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
   }
   .who-col svg{
-    margin-left:auto !important;
-    margin-right:auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 10px !important;
   }
 
-  /* Contact Section - Center Focused */
-  .contact-info,.contact-form{
-    padding:36px 26px;
-    text-align:center !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
+  /* Contact Section - Tight Spacing & Center Focused */
+  .contact{
+    padding-bottom: 36px !important;
+  }
+  .contact-info, .contact-form{
+    padding: 28px 20px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .contact-info h2{
+    margin-bottom: 12px !important;
   }
   .contact-info p{
-    margin-left:auto !important;
-    margin-right:auto !important;
-    text-align:center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+    margin-bottom: 18px !important;
   }
   .contact-detail{
-    margin-left:auto !important;
-    margin-right:auto !important;
-    text-align:center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
   }
-  .contact-form{width:100%;}
-  .form-row{grid-template-columns:1fr;}
+  .contact-form{width: 100%;}
+  .form-row{grid-template-columns: 1fr;}
   .field{
-    align-items:center !important;
-    width:100% !important;
+    align-items: center !important;
+    width: 100% !important;
   }
   .field label{
-    text-align:center !important;
+    text-align: center !important;
   }
   .field input, .field select, .field textarea{
-    width:100% !important;
-    text-align:center !important;
+    width: 100% !important;
+    text-align: center !important;
   }
   .field select{
-    text-align-last:center !important;
+    text-align-last: center !important;
   }
 
-  /* Footer - Center Focused */
+  /* Footer - Tight Padding & Center Focused */
+  footer{
+    padding: 36px 0 24px !important;
+  }
   .footer-top{
-    grid-template-columns:1fr;
-    text-align:center !important;
-    justify-items:center !important;
+    grid-template-columns: 1fr;
+    gap: 24px !important;
+    padding-bottom: 24px !important;
+    text-align: center !important;
+    justify-items: center !important;
   }
   .footer-brand{
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    text-align:center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
   }
   .footer-brand .brand{
-    justify-content:center !important;
+    justify-content: center !important;
   }
   .footer-brand p{
-    margin-left:auto !important;
-    margin-right:auto !important;
-    text-align:center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
   }
   .socials{
-    justify-content:center !important;
+    justify-content: center !important;
   }
   .footer-col{
-    text-align:center !important;
+    text-align: center !important;
+  }
+  .footer-col h4{
+    margin-bottom: 10px !important;
   }
   .footer-bottom{
-    justify-content:center !important;
-    text-align:center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding-top: 16px !important;
   }
 }
 
