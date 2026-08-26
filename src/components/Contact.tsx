@@ -30,25 +30,25 @@ export const Contact: React.FC = () => {
   const validateForm = (data: FormData): FormErrors => {
     const errs: FormErrors = {};
 
-    // 1. Full Name Validation: no digits allowed, minimum 2 characters
+    // 1. Full Name Validation: no digits allowed, MUST BE MORE THAN 3 CHARACTERS (> 3)
     const name = data.fullName.trim();
     if (!name) {
       errs.fullName = 'Full name is required';
     } else if (/\d/.test(name)) {
       errs.fullName = 'Full name cannot contain numbers';
-    } else if (!/^[a-zA-Z\s'.\-]{2,60}$/.test(name)) {
-      errs.fullName = 'Please enter a valid name (letters only)';
+    } else if (name.length <= 3) {
+      errs.fullName = 'Full name must be more than 3 characters';
     }
 
-    // 2. Phone Validation: no alphabetic/email characters, 7-15 digits
+    // 2. Phone Validation: MUST BE EXACTLY 10 DIGITS
     const phone = data.phone.trim();
     const digitsOnly = phone.replace(/\D/g, '');
     if (!phone) {
       errs.phone = 'Phone number is required';
     } else if (/[a-zA-Z@]/.test(phone)) {
       errs.phone = 'Phone cannot contain letters or email format';
-    } else if (digitsOnly.length < 7 || digitsOnly.length > 15) {
-      errs.phone = 'Please enter a valid phone number (7 to 15 digits)';
+    } else if (digitsOnly.length !== 10) {
+      errs.phone = 'Phone number must be exactly 10 digits';
     }
 
     // 3. Email Validation: valid email format required
@@ -57,7 +57,7 @@ export const Contact: React.FC = () => {
     if (!email) {
       errs.email = 'Email address is required';
     } else if (!emailRegex.test(email)) {
-      errs.email = 'Please enter a valid email address (e.g. name@company.com)';
+      errs.email = 'Please enter a valid email address';
     }
 
     return errs;
@@ -71,8 +71,8 @@ export const Contact: React.FC = () => {
 
     // Strict input filtering on keystroke
     if (name === 'phone') {
-      // Physically block any non-numeric/non-phone symbol (letters, @, etc.)
-      value = value.replace(/[^0-9+\s\-()]/g, '');
+      // Physically block non-digits and cap at 10 digits
+      value = value.replace(/\D/g, '').slice(0, 10);
     } else if (name === 'fullName') {
       // Physically block any digits/numbers in full name
       value = value.replace(/[0-9]/g, '');
