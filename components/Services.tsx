@@ -1,6 +1,6 @@
-import React from 'react';
+import Image from 'next/image';
 
-export const Services: React.FC = () => {
+export default function Services() {
   return (
     <section className="services" id="services">
       <div className="wrap">
@@ -10,7 +10,10 @@ export const Services: React.FC = () => {
             <span className="service-index">01 — AI Media Buying</span>
             <h3>Performance marketing, automated.</h3>
             <p>
-              Stop guessing on spend. Our AI bidding layer reallocates budget across Meta and Google in real time, chasing profit instead of vanity metrics — daily optimization, not &quot;set and forget.&quot;
+              Stop guessing on spend. Our AI bidding layer reallocates budget
+              across Meta and Google in real time, chasing profit instead of
+              vanity metrics — daily optimization, not &quot;set and
+              forget.&quot;
             </p>
             <div className="service-pills">
               <span>Meta Ads</span>
@@ -29,12 +32,13 @@ export const Services: React.FC = () => {
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
+                  aria-hidden="true"
                 >
                   <path d="M3 17l6-6 4 4 8-8" />
                 </svg>
               </div>
             </div>
-            <div className="bars">
+            <div className="bars" aria-hidden="true">
               <i style={{ height: '38%' }} />
               <i style={{ height: '62%' }} />
               <i style={{ height: '48%' }} />
@@ -45,7 +49,8 @@ export const Services: React.FC = () => {
               <i
                 style={{
                   height: '100%',
-                  background: 'linear-gradient(180deg,var(--orange),rgba(245,135,31,0.15))',
+                  background:
+                    'linear-gradient(180deg, var(--orange), rgba(245, 135, 31, 0.15))',
                 }}
               />
             </div>
@@ -62,7 +67,9 @@ export const Services: React.FC = () => {
             <span className="service-index">02 — Creative Systems</span>
             <h3>Content &amp; creative that converts.</h3>
             <p>
-              We write and design ads built to earn the click — high CTR, low CPA — then keep testing variants until they win again, every single week.
+              We write and design ads built to earn the click — high CTR, low CPA
+              — then keep testing variants until they win again, every single
+              week.
             </p>
             <div className="service-pills">
               <span>Ad Copywriting</span>
@@ -81,18 +88,21 @@ export const Services: React.FC = () => {
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
+                  aria-hidden="true"
                 >
                   <path d="M12 20l9-9-4-4-9 9v4h4z" />
                 </svg>
               </div>
             </div>
-            <div
-              className="visual-photo"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1716471330463-f475b00f0506?q=80&w=800&auto=format&fit=crop')",
-              }}
-            />
+            <div className="visual-photo">
+              <Image
+                src="https://images.unsplash.com/photo-1716471330463-f475b00f0506?q=80&w=800&auto=format&fit=crop"
+                alt="Creative systems and design workspace"
+                fill
+                sizes="(max-width: 768px) 100vw, 500px"
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
             <div className="visual-foot">
               <span>CTR +38%</span>
               <span>CPA −24%</span>
@@ -106,7 +116,9 @@ export const Services: React.FC = () => {
             <span className="service-index">03 — Video Production</span>
             <h3>Video, produced start to finish.</h3>
             <p>
-              High-impact, scroll-stopping video — we handle scripting, shooting, and editing end to end, so every asset is built to perform, not just to look good.
+              High-impact, scroll-stopping video — we handle scripting,
+              shooting, and editing end to end, so every asset is built to
+              perform, not just to look good.
             </p>
             <div className="service-pills">
               <span>Scripting</span>
@@ -125,21 +137,23 @@ export const Services: React.FC = () => {
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
+                  aria-hidden="true"
                 >
                   <path d="M23 7l-7 5 7 5V7z" />
                   <rect x="1" y="5" width="15" height="14" rx="2" />
                 </svg>
               </div>
             </div>
-            <div
-              className="video-frame"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1612894542733-219bb3476343?q=80&w=800&auto=format&fit=crop')",
-              }}
-            >
-              <div className="play-btn" style={{ position: 'relative', zIndex: 1 }}>
-                <svg viewBox="0 0 24 24">
+            <div className="video-frame">
+              <Image
+                src="https://images.unsplash.com/photo-1612894542733-219bb3476343?q=80&w=800&auto=format&fit=crop"
+                alt="Video production camera setup"
+                fill
+                sizes="(max-width: 768px) 100vw, 500px"
+                style={{ objectFit: 'cover' }}
+              />
+              <div className="play-btn">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </div>
@@ -153,4 +167,4 @@ export const Services: React.FC = () => {
       </div>
     </section>
   );
-};
+}

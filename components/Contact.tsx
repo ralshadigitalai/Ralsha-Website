@@ -1,166 +1,163 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import { useState, useRef, FormEvent, ChangeEvent } from 'react';
+import { submitContactForm } from '@/lib/api/contact';
 
-interface FormData {
+interface FormState {
   fullName: string;
   phone: string;
   email: string;
   monthlySpend: string;
-  sellingDetail: string;
-  website: string; // Honeypot field
+  businessDetails: string;
+  website: string; // Honeypot
 }
 
 interface FormErrors {
   fullName?: string;
   phone?: string;
   email?: string;
+  monthlySpend?: string;
+  businessDetails?: string;
 }
 
-export const Contact: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>({
+export default function Contact() {
+  const [formState, setFormState] = useState<FormState>({
     fullName: '',
     phone: '',
     email: '',
-    monthlySpend: 'Not spending on ads yet',
-    sellingDetail: '',
+    monthlySpend: '',
+    businessDetails: '',
     website: '',
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fullNameRef = useRef<HTMLInputElement | null>(null);
-  const phoneRef = useRef<HTMLInputElement | null>(null);
-  const emailRef = useRef<HTMLInputElement | null>(null);
+  // Field refs to focus the first invalid field
+  const fullNameRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const monthlySpendRef = useRef<HTMLSelectElement>(null);
+  const businessDetailsRef = useRef<HTMLTextAreaElement>(null);
 
-  const validateForm = (data: FormData): FormErrors => {
-    const errs: FormErrors = {};
+  // Validation functions
+  const validateField = (name: keyof FormState, value: string): string | undefined => {
+    const trimmed = value.trim();
 
-    // 1. Full Name Validation: no digits allowed, MUST BE MORE THAN 3 CHARACTERS (> 3)
-    const name = data.fullName.trim();
-    if (!name) {
-      errs.fullName = 'Full name is required';
-    } else if (/\d/.test(name)) {
-      errs.fullName = 'Full name cannot contain numbers';
-    } else if (name.length <= 3) {
-      errs.fullName = 'Full name must be more than 3 characters';
+    if (name === 'fullName') {
+      if (!trimmed) return 'Full name is required.';
+      if (trimmed.length < 2) return 'Full name must contain at least 2 characters.';
+      if (trimmed.length > 100) return 'Full name must not exceed 100 characters.';
+      if (!/^[a-zA-Z\s'.-]+$/.test(trimmed)) {
+        return 'Full name contains invalid characters.';
+      }
     }
 
-    // 2. Phone Validation: Supports optional +91, spaces, hyphens; extracts & validates 10-digit mobile number
-    const phone = data.phone.trim();
-    const rawDigits = phone.replace(/\D/g, '');
-    let normalizedDigits = rawDigits;
-    if (rawDigits.length === 12 && rawDigits.startsWith('91')) {
-      normalizedDigits = rawDigits.slice(2);
+    if (name === 'phone') {
+      if (!trimmed) return 'Phone number is required.';
+      // Strip spaces, dashes, brackets, +91, 0
+      let cleanPhone = trimmed.replace(/[\s()\-]/g, '');
+      if (cleanPhone.startsWith('+91')) cleanPhone = cleanPhone.slice(3);
+      else if (cleanPhone.startsWith('91') && cleanPhone.length === 12) cleanPhone = cleanPhone.slice(2);
+      else if (cleanPhone.startsWith('0') && cleanPhone.length === 11) cleanPhone = cleanPhone.slice(1);
+
+      if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+        return 'Please enter a valid 10-digit Indian mobile number starting with 6-9.';
+      }
+
+      // Check repeated digits
+      if (/^(\d)\1{9}$/.test(cleanPhone)) {
+        return 'Please enter a valid mobile number.';
+      }
     }
 
-    if (!phone) {
-      errs.phone = 'Phone number is required';
-    } else if (/[a-zA-Z@]/.test(phone)) {
-      errs.phone = 'Phone cannot contain letters or email format';
-    } else if (normalizedDigits.length !== 10) {
-      errs.phone = 'Phone number must be a valid 10-digit mobile number';
+    if (name === 'email') {
+      if (!trimmed) return 'Email address is required.';
+      if (trimmed.length > 254) return 'Email address is too long.';
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(trimmed)) {
+        return 'Please enter a valid email address.';
+      }
     }
 
-    // 3. Email Validation
-    const email = data.email.trim();
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!email) {
-      errs.email = 'Email address is required';
-    } else if (!emailRegex.test(email)) {
-      errs.email = 'Please enter a valid email address';
+    if (name === 'monthlySpend') {
+      if (!value) return 'Please select your current monthly ad spend.';
     }
 
-    return errs;
+    if (name === 'businessDetails') {
+      if (!trimmed) return 'Business details are required.';
+      if (trimmed.length < 5) return 'Please provide a brief description (at least 5 characters).';
+      if (trimmed.length > 2000) return 'Description must not exceed 2000 characters.';
+    }
+
+    return undefined;
+  };
+
+  const validateAll = (): FormErrors => {
+    const newErrors: FormErrors = {};
+    const nameErr = validateField('fullName', formState.fullName);
+    if (nameErr) newErrors.fullName = nameErr;
+
+    const phoneErr = validateField('phone', formState.phone);
+    if (phoneErr) newErrors.phone = phoneErr;
+
+    const emailErr = validateField('email', formState.email);
+    if (emailErr) newErrors.email = emailErr;
+
+    const spendErr = validateField('monthlySpend', formState.monthlySpend);
+    if (spendErr) newErrors.monthlySpend = spendErr;
+
+    const detailsErr = validateField('businessDetails', formState.businessDetails);
+    if (detailsErr) newErrors.businessDetails = detailsErr;
+
+    return newErrors;
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    const { name } = e.target;
-    let value = e.target.value;
+    const { name, value } = e.target;
+    setFormState((prev) => ({ ...prev, [name]: value }));
 
-    // Keystroke filtering & digit capping
-    if (name === 'fullName') {
-      // Block numeric digits in full name, cap at 100 chars
-      value = value.replace(/[0-9]/g, '').slice(0, 100);
-    } else if (name === 'phone') {
-      // Filter non-phone characters
-      let filtered = value.replace(/[^0-9+\s-]/g, '');
-
-      if (filtered.startsWith('+91')) {
-        // Cap digits after +91 prefix to max 10 digits
-        const digitsAfter = filtered.slice(3).replace(/\D/g, '').slice(0, 10);
-        filtered = '+91 ' + digitsAfter;
-      } else if (filtered.startsWith('+')) {
-        // General + prefix
-        const digitsAfter = filtered.slice(1).replace(/\D/g, '').slice(0, 12);
-        filtered = '+' + digitsAfter;
-      } else {
-        // Standard phone input: physically cap strictly at 10 digits
-        const digitsOnly = filtered.replace(/\D/g, '').slice(0, 10);
-        filtered = digitsOnly;
-      }
-      value = filtered;
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
+    // Dynamic error clearing
     if (errors[name as keyof FormErrors]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: undefined,
-      }));
+      const err = validateField(name as keyof FormState, value);
+      setErrors((prev) => ({ ...prev, [name]: err }));
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (submitting) return;
+    setStatusMessage(null);
 
-    setSubmitError(null);
-    const formErrors = validateForm(formData);
+    const validationErrors = validateAll();
+    setErrors(validationErrors);
 
-    if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors);
-      if (formErrors.fullName && fullNameRef.current) {
+    if (Object.keys(validationErrors).length > 0) {
+      // Focus the first invalid field
+      if (validationErrors.fullName && fullNameRef.current) {
         fullNameRef.current.focus();
-      } else if (formErrors.phone && phoneRef.current) {
+      } else if (validationErrors.phone && phoneRef.current) {
         phoneRef.current.focus();
-      } else if (formErrors.email && emailRef.current) {
+      } else if (validationErrors.email && emailRef.current) {
         emailRef.current.focus();
+      } else if (validationErrors.monthlySpend && monthlySpendRef.current) {
+        monthlySpendRef.current.focus();
+      } else if (validationErrors.businessDetails && businessDetailsRef.current) {
+        businessDetailsRef.current.focus();
       }
       return;
     }
 
-    setSubmitting(true);
-
+    setIsSubmitting(true);
     try {
-      const res = await fetch('/api/lead', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        setSubmitted(true);
-      } else {
-        setSubmitError(data.error || 'Unable to submit request. Please try again.');
-      }
+      const response = await submitContactForm(formState);
+      setStatusMessage(response.message);
     } catch {
-      setSubmitError('Network error. Please try again.');
+      setStatusMessage('An unexpected error occurred. Please try again.');
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -174,9 +171,13 @@ export const Contact: React.FC = () => {
               Ready to put <span className="accent">AI behind your growth?</span>
             </h2>
             <p>
-              Tell us about your business. If we&apos;re a fit, you&apos;ll hear from us within one business day — no auto-reply, no sales script.
+              Tell us about your business. If we&apos;re a fit, you&apos;ll hear
+              from us within one business day — no auto-reply, no sales script.
             </p>
-            <a href="mailto:ralshadigitalai@gmail.com" className="contact-detail">
+            <a
+              href="mailto:ralshadigitalai@gmail.com"
+              className="contact-detail"
+            >
               ralshadigitalai@gmail.com
             </a>
             <a href="tel:+910000000000" className="contact-detail">
@@ -184,155 +185,165 @@ export const Contact: React.FC = () => {
             </a>
           </div>
 
-          {submitted ? (
-            <div className="contact-form">
-              <div className="form-thankyou">
-                <div className="thankyou-icon">
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="28"
-                    height="28"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                <h3>Thank you for reaching out!</h3>
-                <p>
-                  We have received your details and will get back to you within one business day.
-                </p>
-              </div>
+          <form className="contact-form" onSubmit={handleSubmit} noValidate>
+            {/* Honeypot Field */}
+            <div style={{ display: 'none' }} aria-hidden="true">
+              <label htmlFor="fwebsite">Website</label>
+              <input
+                id="fwebsite"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                name="website"
+                value={formState.website}
+                onChange={handleChange}
+              />
             </div>
-          ) : (
-            <form className="contact-form" onSubmit={handleSubmit} noValidate>
-              {/* Visually Hidden Honeypot Field */}
-              <div style={{ display: 'none' }} aria-hidden="true">
-                <label htmlFor="fwebsite">Website</label>
-                <input
-                  id="fwebsite"
-                  name="website"
-                  type="text"
-                  tabIndex={-1}
-                  autoComplete="off"
-                  value={formData.website}
-                  onChange={handleChange}
-                />
-              </div>
 
-              <div className="form-row">
-                <div className="field">
-                  <label htmlFor="fname">Full name *</label>
-                  <input
-                    id="fname"
-                    name="fullName"
-                    type="text"
-                    ref={fullNameRef}
-                    placeholder="Your name"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    className={errors.fullName ? 'has-error' : ''}
-                    aria-invalid={!!errors.fullName}
-                    aria-describedby={errors.fullName ? 'err-fname' : undefined}
-                    maxLength={100}
-                    required
-                  />
-                  {errors.fullName && (
-                    <span id="err-fname" className="field-error" role="alert">
-                      {errors.fullName}
-                    </span>
-                  )}
-                </div>
-                <div className="field">
-                  <label htmlFor="fphone">Phone *</label>
-                  <input
-                    id="fphone"
-                    name="phone"
-                    type="tel"
-                    ref={phoneRef}
-                    placeholder="Your number (e.g. +91 98765 43210)"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className={errors.phone ? 'has-error' : ''}
-                    aria-invalid={!!errors.phone}
-                    aria-describedby={errors.phone ? 'err-fphone' : undefined}
-                    maxLength={15}
-                    required
-                  />
-                  {errors.phone && (
-                    <span id="err-fphone" className="field-error" role="alert">
-                      {errors.phone}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="field" style={{ marginBottom: '16px' }}>
-                <label htmlFor="femail">Email *</label>
+            <div className="form-row">
+              <div className="field">
+                <label htmlFor="fname">Full name *</label>
                 <input
-                  id="femail"
-                  name="email"
-                  type="email"
-                  ref={emailRef}
-                  placeholder="you@company.com"
-                  value={formData.email}
+                  id="fname"
+                  ref={fullNameRef}
+                  type="text"
+                  name="fullName"
+                  placeholder="Your name"
+                  value={formState.fullName}
                   onChange={handleChange}
-                  className={errors.email ? 'has-error' : ''}
-                  aria-invalid={!!errors.email}
-                  aria-describedby={errors.email ? 'err-femail' : undefined}
-                  maxLength={254}
+                  aria-invalid={!!errors.fullName}
+                  aria-describedby={errors.fullName ? 'err-fname' : undefined}
+                  maxLength={100}
                   required
                 />
-                {errors.email && (
-                  <span id="err-femail" className="field-error" role="alert">
-                    {errors.email}
+                {errors.fullName && (
+                  <span id="err-fname" className="error-text">
+                    {errors.fullName}
                   </span>
                 )}
               </div>
-              <div className="field" style={{ marginBottom: '16px' }}>
-                <label htmlFor="fspend">Current monthly ad spend</label>
-                <select
-                  id="fspend"
-                  name="monthlySpend"
-                  value={formData.monthlySpend}
+
+              <div className="field">
+                <label htmlFor="fphone">Phone *</label>
+                <input
+                  id="fphone"
+                  ref={phoneRef}
+                  type="tel"
+                  name="phone"
+                  placeholder="Your number"
+                  value={formState.phone}
                   onChange={handleChange}
-                >
-                  <option value="Not spending on ads yet">Not spending on ads yet</option>
-                  <option value="Under ₹1,50,000 / month">Under ₹1,50,000 / month</option>
-                  <option value="₹1,50,000 – ₹8,00,000 / month">₹1,50,000 – ₹8,00,000 / month</option>
-                  <option value="₹8,00,000+ / month">₹8,00,000+ / month</option>
-                </select>
-              </div>
-              <div className="field" style={{ marginBottom: '20px' }}>
-                <label htmlFor="fabout">What do you sell?</label>
-                <textarea
-                  id="fabout"
-                  name="sellingDetail"
-                  placeholder="A line or two about your business"
-                  value={formData.sellingDetail}
-                  onChange={handleChange}
-                  maxLength={2000}
+                  aria-invalid={!!errors.phone}
+                  aria-describedby={errors.phone ? 'err-fphone' : undefined}
+                  maxLength={20}
+                  required
                 />
+                {errors.phone && (
+                  <span id="err-fphone" className="error-text">
+                    {errors.phone}
+                  </span>
+                )}
               </div>
-              {submitError && (
-                <div style={{ color: '#ff6b6b', fontSize: '13px', marginBottom: '12px', textAlign: 'center' }}>
-                  {submitError}
-                </div>
+            </div>
+
+            <div className="field" style={{ marginBottom: '16px' }}>
+              <label htmlFor="femail">Email *</label>
+              <input
+                id="femail"
+                ref={emailRef}
+                type="email"
+                name="email"
+                placeholder="you@company.com"
+                value={formState.email}
+                onChange={handleChange}
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? 'err-femail' : undefined}
+                maxLength={254}
+                required
+              />
+              {errors.email && (
+                <span id="err-femail" className="error-text">
+                  {errors.email}
+                </span>
               )}
-              <button
-                className="btn btn-primary btn-block"
-                type="submit"
-                disabled={submitting}
+            </div>
+
+            <div className="field" style={{ marginBottom: '16px' }}>
+              <label htmlFor="fspend">Current monthly ad spend *</label>
+              <select
+                id="fspend"
+                ref={monthlySpendRef}
+                name="monthlySpend"
+                value={formState.monthlySpend}
+                onChange={handleChange}
+                aria-invalid={!!errors.monthlySpend}
+                aria-describedby={errors.monthlySpend ? 'err-fspend' : undefined}
+                required
               >
-                {submitting ? 'Sending...' : 'Send it over'}
-              </button>
-              <p className="form-note">We reply to every single submission. No spam, ever.</p>
-            </form>
-          )}
+                <option value="" disabled>
+                  Select monthly ad spend
+                </option>
+                <option value="Not spending on ads yet">
+                  Not spending on ads yet
+                </option>
+                <option value="Under ₹1,50,000 / month">
+                  Under ₹1,50,000 / month
+                </option>
+                <option value="₹1,50,000 – ₹8,00,000 / month">
+                  ₹1,50,000 – ₹8,00,000 / month
+                </option>
+                <option value="₹8,00,000+ / month">₹8,00,000+ / month</option>
+              </select>
+              {errors.monthlySpend && (
+                <span id="err-fspend" className="error-text">
+                  {errors.monthlySpend}
+                </span>
+              )}
+            </div>
+
+            <div className="field" style={{ marginBottom: '20px' }}>
+              <label htmlFor="fabout">What do you sell? *</label>
+              <textarea
+                id="fabout"
+                ref={businessDetailsRef}
+                name="businessDetails"
+                placeholder="A line or two about your business"
+                value={formState.businessDetails}
+                onChange={handleChange}
+                aria-invalid={!!errors.businessDetails}
+                aria-describedby={
+                  errors.businessDetails ? 'err-fabout' : undefined
+                }
+                maxLength={2000}
+                required
+              />
+              {errors.businessDetails && (
+                <span id="err-fabout" className="error-text">
+                  {errors.businessDetails}
+                </span>
+              )}
+            </div>
+
+            <button
+              className="btn btn-primary btn-block"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Validating...' : 'Send it over'}
+            </button>
+
+            {statusMessage && (
+              <div className="form-status-box info" role="status">
+                {statusMessage}
+              </div>
+            )}
+
+            <p className="form-note">
+              We reply to every single submission. No spam, ever.
+            </p>
+          </form>
         </div>
       </div>
     </section>
   );
-};
+}

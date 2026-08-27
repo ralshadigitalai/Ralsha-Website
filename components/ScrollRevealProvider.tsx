@@ -1,35 +1,42 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
-export const ScrollRevealProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export default function ScrollRevealProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   useEffect(() => {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const revealEls = document.querySelectorAll('.reveal');
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
 
-    if (prefersReduced) {
-      revealEls.forEach((el) => el.classList.add('in'));
+    const revealElements = document.querySelectorAll('.reveal');
+
+    if (prefersReducedMotion) {
+      revealElements.forEach((el) => el.classList.add('in'));
       return;
     }
 
-    const io = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add('in');
-            io.unobserve(e.target);
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            observer.unobserve(entry.target);
           }
         });
       },
       { threshold: 0.15 }
     );
 
-    revealEls.forEach((el) => io.observe(el));
+    revealElements.forEach((el) => observer.observe(el));
 
     return () => {
-      io.disconnect();
+      observer.disconnect();
     };
   }, []);
 
   return <>{children}</>;
-};
+}

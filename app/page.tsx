@@ -1,23 +1,24 @@
-import { Nav } from '@/components/Nav';
-import { Hero } from '@/components/Hero';
-import { Services } from '@/components/Services';
-import { Process } from '@/components/Process';
-import { WhoItsFor } from '@/components/WhoItsFor';
-import { Contact } from '@/components/Contact';
-import { Footer } from '@/components/Footer';
+import Header from '@/components/Header';
+import Hero from '@/components/Hero';
+import Services from '@/components/Services';
+import Process from '@/components/Process';
+import Audience from '@/components/Audience';
+import Contact from '@/components/Contact';
+import Footer from '@/components/Footer';
+import ScrollRevealProvider from '@/components/ScrollRevealProvider';
 
 export default function Home() {
   return (
-    <>
-      <Nav />
+    <ScrollRevealProvider>
+      <Header />
       <main>
         <Hero />
         <Services />
         <Process />
-        <WhoItsFor />
+        <Audience />
         <Contact />
       </main>
       <Footer />
-    </>
+    </ScrollRevealProvider>
   );
 }
