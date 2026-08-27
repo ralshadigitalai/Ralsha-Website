@@ -83,13 +83,28 @@ export const Contact: React.FC = () => {
     const { name } = e.target;
     let value = e.target.value;
 
-    // Keystroke filtering
+    // Keystroke filtering & digit capping
     if (name === 'fullName') {
-      // Block numeric digits in full name
-      value = value.replace(/[0-9]/g, '');
+      // Block numeric digits in full name, cap at 100 chars
+      value = value.replace(/[0-9]/g, '').slice(0, 100);
     } else if (name === 'phone') {
-      // Allow +, digits, spaces, hyphens for optional +91 and formatting
-      value = value.replace(/[^0-9+\s-]/g, '');
+      // Filter non-phone characters
+      let filtered = value.replace(/[^0-9+\s-]/g, '');
+
+      if (filtered.startsWith('+91')) {
+        // Cap digits after +91 prefix to max 10 digits
+        const digitsAfter = filtered.slice(3).replace(/\D/g, '').slice(0, 10);
+        filtered = '+91 ' + digitsAfter;
+      } else if (filtered.startsWith('+')) {
+        // General + prefix
+        const digitsAfter = filtered.slice(1).replace(/\D/g, '').slice(0, 12);
+        filtered = '+' + digitsAfter;
+      } else {
+        // Standard phone input: physically cap strictly at 10 digits
+        const digitsOnly = filtered.replace(/\D/g, '').slice(0, 10);
+        filtered = digitsOnly;
+      }
+      value = filtered;
     }
 
     setFormData((prev) => ({
@@ -222,6 +237,7 @@ export const Contact: React.FC = () => {
                     className={errors.fullName ? 'has-error' : ''}
                     aria-invalid={!!errors.fullName}
                     aria-describedby={errors.fullName ? 'err-fname' : undefined}
+                    maxLength={100}
                     required
                   />
                   {errors.fullName && (
@@ -243,6 +259,7 @@ export const Contact: React.FC = () => {
                     className={errors.phone ? 'has-error' : ''}
                     aria-invalid={!!errors.phone}
                     aria-describedby={errors.phone ? 'err-fphone' : undefined}
+                    maxLength={15}
                     required
                   />
                   {errors.phone && (
@@ -265,6 +282,7 @@ export const Contact: React.FC = () => {
                   className={errors.email ? 'has-error' : ''}
                   aria-invalid={!!errors.email}
                   aria-describedby={errors.email ? 'err-femail' : undefined}
+                  maxLength={254}
                   required
                 />
                 {errors.email && (
@@ -295,6 +313,7 @@ export const Contact: React.FC = () => {
                   placeholder="A line or two about your business"
                   value={formData.sellingDetail}
                   onChange={handleChange}
+                  maxLength={2000}
                 />
               </div>
               {submitError && (
