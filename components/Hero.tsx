@@ -1,26 +1,29 @@
-import React from 'react';
-import { HeroCanvas } from './HeroCanvas';
+import Link from 'next/link';
+import HeroCanvas from './HeroCanvas';
 
-export const Hero: React.FC = () => {
+export default function Hero() {
   return (
     <section className="hero" id="top">
       <HeroCanvas />
       <div className="wrap hero-inner">
         <span className="eyebrow">AI-driven growth for ambitious brands</span>
         <h1>
-          Your growth,<br />
+          Your growth,
+          <br />
           <span className="accent">engineered.</span>
         </h1>
         <p className="lead">
-          Ralsha runs your media buying, builds your creative, and automates your funnels — every dollar tracked from click to close. Built for teams serious about scaling with AI.
+          Ralsha runs your media buying, builds your creative, and automates
+          your funnels — every dollar tracked from click to close. Built for
+          teams serious about scaling with AI.
         </p>
         <div className="hero-cta">
-          <a href="#contact" className="btn btn-primary">
+          <Link href="#contact" className="btn btn-primary">
             Book a strategy call →
-          </a>
-          <a href="#services" className="btn btn-ghost">
+          </Link>
+          <Link href="#services" className="btn btn-ghost">
             See what we do
-          </a>
+          </Link>
         </div>
         <div className="hero-tags">
           <span>AI Ad Automation</span>
@@ -31,4 +34,4 @@ export const Hero: React.FC = () => {
       </div>
     </section>
   );
-};
+}

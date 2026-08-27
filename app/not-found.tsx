@@ -9,15 +9,37 @@ export default function NotFound() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#060d20',
-        color: '#fff',
+        backgroundColor: '#060d20',
+        color: '#ffffff',
         padding: '24px',
         textAlign: 'center',
       }}
     >
-      <h1 style={{ fontSize: '72px', marginBottom: '16px', color: 'var(--orange)' }}>404</h1>
-      <h2 style={{ fontSize: '24px', marginBottom: '16px' }}>Page Not Found</h2>
-      <p style={{ maxWidth: '420px', marginBottom: '32px', color: 'var(--muted-dark)' }}>
+      <h1
+        style={{
+          fontSize: '72px',
+          marginBottom: '16px',
+          color: '#f5871f',
+        }}
+      >
+        404
+      </h1>
+      <h2
+        style={{
+          fontSize: '24px',
+          marginBottom: '16px',
+        }}
+      >
+        Page Not Found
+      </h2>
+      <p
+        style={{
+          maxWidth: '420px',
+          marginBottom: '32px',
+          color: '#93a0c4',
+          lineHeight: 1.6,
+        }}
+      >
         The page you are looking for does not exist or has been moved.
       </p>
       <Link href="/" className="btn btn-primary">
