@@ -30,7 +30,7 @@ export const Process: React.FC = () => {
           <div className="process-card reveal">
             <div className="process-num">04</div>
             <h3>Scale</h3>
-            <p>We double down on what's profitable and cut what isn't — every single week.</p>
+            <p>We double down on what&apos;s profitable and cut what isn&apos;t — every single week.</p>
           </div>
         </div>
       </div>

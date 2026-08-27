@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import logo from '../assets/logo.png';
+import Image from 'next/image';
 
 export const LoadingScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -16,7 +18,14 @@ export const LoadingScreen: React.FC = () => {
     <div className={`app-loader ${!loading ? 'fade-out' : ''}`}>
       <div className="loader-content">
         <div className="loader-logo-wrapper">
-          <img src={logo} alt="Ralsha logo" className="loader-logo" />
+          <Image
+            src="/assets/logo.png"
+            alt="Ralsha logo"
+            width={44}
+            height={44}
+            className="loader-logo"
+            priority
+          />
           <div className="loader-pulse-ring"></div>
         </div>
         <span className="loader-brand">RALSHA</span>

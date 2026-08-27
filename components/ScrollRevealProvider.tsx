@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
+'use client';
 
-export function useScrollReveal() {
+import React, { useEffect } from 'react';
+
+export const ScrollRevealProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const revealEls = document.querySelectorAll('.reveal');
@@ -28,4 +30,6 @@ export function useScrollReveal() {
       io.disconnect();
     };
   }, []);
-}
+
+  return <>{children}</>;
+};

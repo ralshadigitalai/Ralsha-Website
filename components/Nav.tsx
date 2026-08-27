@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import logo from '../assets/logo.png';
+import Image from 'next/image';
 
 export const Nav: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -16,6 +18,14 @@ export const Nav: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [mobileOpen]);
+
   const closeMobile = () => setMobileOpen(false);
 
   return (
@@ -23,13 +33,13 @@ export const Nav: React.FC = () => {
       <div className="wrap">
         <nav>
           <a href="#top" className="brand" onClick={closeMobile}>
-            <img src={logo} alt="Ralsha logo" />
+            <Image src="/assets/logo.png" alt="Ralsha logo" width={38} height={38} priority />
             <b>RALSHA</b>
           </a>
           <div className="nav-links">
             <a href="#services">Services</a>
             <a href="#process">Process</a>
-            <a href="#who">Who it's for</a>
+            <a href="#who">Who it&apos;s for</a>
             <a href="#contact">Contact</a>
           </div>
           <div className="nav-right">
@@ -43,6 +53,7 @@ export const Nav: React.FC = () => {
           <button
             className="menu-btn"
             aria-label="Menu"
+            aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((prev) => !prev)}
           >
             {mobileOpen ? '✕' : '☰'}
@@ -60,7 +71,7 @@ export const Nav: React.FC = () => {
               Process
             </a>
             <a href="#who" onClick={closeMobile}>
-              Who it's for
+              Who it&apos;s for
             </a>
             <a href="#contact" onClick={closeMobile}>
               Contact

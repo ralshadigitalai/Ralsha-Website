@@ -10,7 +10,7 @@ export const Services: React.FC = () => {
             <span className="service-index">01 — AI Media Buying</span>
             <h3>Performance marketing, automated.</h3>
             <p>
-              Stop guessing on spend. Our AI bidding layer reallocates budget across Meta and Google in real time, chasing profit instead of vanity metrics — daily optimization, not "set and forget."
+              Stop guessing on spend. Our AI bidding layer reallocates budget across Meta and Google in real time, chasing profit instead of vanity metrics — daily optimization, not &quot;set and forget.&quot;
             </p>
             <div className="service-pills">
               <span>Meta Ads</span>
@@ -86,7 +86,6 @@ export const Services: React.FC = () => {
                 </svg>
               </div>
             </div>
-            {/* Note: Unsplash image hotlink placeholder - download and self-host before production */}
             <div
               className="visual-photo"
               style={{
@@ -132,7 +131,6 @@ export const Services: React.FC = () => {
                 </svg>
               </div>
             </div>
-            {/* Note: Unsplash image hotlink placeholder - download and self-host before production */}
             <div
               className="video-frame"
               style={{

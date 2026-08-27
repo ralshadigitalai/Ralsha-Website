@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../assets/logo.png';
+import Image from 'next/image';
 
 export const Footer: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ export const Footer: React.FC = () => {
         <div className="footer-top">
           <div className="footer-brand">
             <a href="#top" className="brand">
-              <img src={logo} alt="Ralsha logo" style={{ height: '36px', width: '36px' }} />
+              <Image src="/assets/logo.png" alt="Ralsha logo" width={36} height={36} />
               <b>RALSHA</b>
             </a>
             <p>AI-driven growth for ambitious businesses that grow on conviction, not guesswork.</p>
@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
             <h4>Studio</h4>
             <a href="#services">Services</a>
             <a href="#process">Process</a>
-            <a href="#who">Who it's for</a>
+            <a href="#who">Who it&apos;s for</a>
           </div>
           <div className="footer-col">
             <h4>Contact</h4>

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef } from 'react';
 
 interface CanvasNode {
@@ -36,7 +38,6 @@ export const HeroCanvas: React.FC = () => {
     const initNodes = () => {
       if (!canvas) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      // Cap node count to maximum 40 to eliminate calculation overhead
       const count = Math.min(40, Math.max(24, Math.floor((canvas.offsetWidth * canvas.offsetHeight) / 28000)));
       nodes = Array.from({ length: count }).map(() => ({
         x: Math.random() * W,
@@ -67,7 +68,7 @@ export const HeroCanvas: React.FC = () => {
         }
       }
 
-      // 2. Draw connections using squared distance check
+      // 2. Draw connections
       ctx.lineWidth = dpr * 0.8;
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];

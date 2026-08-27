@@ -5,7 +5,7 @@ export const WhoItsFor: React.FC = () => {
     <section className="who" id="who">
       <div className="wrap">
         <div className="section-head reveal">
-          <span className="eyebrow">Who it's for</span>
+          <span className="eyebrow">Who it&apos;s for</span>
           <h2>
             Built for teams that are <span className="accent">ready to scale.</span>
           </h2>
@@ -14,7 +14,6 @@ export const WhoItsFor: React.FC = () => {
           </p>
         </div>
         <div className="who-grid">
-          {/* Note: Unsplash image hotlink placeholder - download and self-host before production */}
           <div
             className="who-tile reveal"
             style={{
@@ -24,7 +23,6 @@ export const WhoItsFor: React.FC = () => {
           >
             <span>Coaches</span>
           </div>
-          {/* Note: Unsplash image hotlink placeholder - download and self-host before production */}
           <div
             className="who-tile reveal"
             style={{
@@ -34,7 +32,6 @@ export const WhoItsFor: React.FC = () => {
           >
             <span>E-commerce</span>
           </div>
-          {/* Note: Unsplash image hotlink placeholder - download and self-host before production */}
           <div
             className="who-tile reveal"
             style={{
@@ -44,7 +41,6 @@ export const WhoItsFor: React.FC = () => {
           >
             <span>Healthcare</span>
           </div>
-          {/* Note: Unsplash image hotlink placeholder - download and self-host before production */}
           <div
             className="who-tile reveal"
             style={{
