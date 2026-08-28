@@ -12,15 +12,24 @@ export interface ContactApiResponse {
   message: string;
 }
 
-/**
- * Isolated contact form API submission handler.
- * Note: No production backend endpoint is currently configured.
- * This handler isolates future API integration (endpoint, payload, headers).
- */
+type SignupApiResponse =
+  | {
+      success: true;
+      data: unknown;
+      message?: string;
+    }
+  | {
+      success: false;
+      error?: {
+        code?: string;
+        message?: string;
+      };
+    };
+
 export async function submitContactForm(
   data: ContactFormData
 ): Promise<ContactApiResponse> {
-  // If honeypot is filled, discard silently
+  // Bots often fill hidden fields. Do not send their request to the API.
   if (data.honeypot) {
     return {
       success: true,
@@ -28,10 +37,58 @@ export async function submitContactForm(
     };
   }
 
-  // Production API endpoint is not yet provided.
-  return {
-    success: false,
-    message:
-      'Production lead submission is currently unavailable as no backend API endpoint has been configured yet.',
-  };
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 15_000);
+
+  try {
+    const response = await fetch('/api/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: data.fullName.trim(),
+        email: data.email.trim().toLowerCase(),
+        phone: data.phone.trim(),
+        countryCode: '+91',
+        monthlyAdSpend: data.monthlySpend,
+        productsSold: data.businessDetails.trim(),
+        route: window.location.pathname,
+        timezone:
+          Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata',
+      }),
+      signal: controller.signal,
+    });
+
+    const result = (await response.json()) as SignupApiResponse;
+
+    if (response.ok && result.success) {
+      return {
+        success: true,
+        message: result.message || 'Your details were submitted successfully.',
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        !result.success && result.error?.message
+          ? result.error.message
+          : 'Unable to submit your details. Please try again.',
+    };
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return {
+        success: false,
+        message: 'The request took too long. Please try again.',
+      };
+    }
+
+    return {
+      success: false,
+      message: 'Unable to connect to the server. Please try again.',
+    };
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
 }
