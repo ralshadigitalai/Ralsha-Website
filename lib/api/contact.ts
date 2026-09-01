@@ -1,3 +1,5 @@
+import { getAttribution, clearAttribution } from '@/lib/utm';
+
 export interface ContactFormData {
   fullName: string;
   phone: string;
@@ -41,6 +43,8 @@ export async function submitContactForm(
   const timeoutId = window.setTimeout(() => controller.abort(), 15_000);
 
   try {
+    const attribution = getAttribution();
+
     const response = await fetch('/api/signup', {
       method: 'POST',
       headers: {
@@ -56,6 +60,7 @@ export async function submitContactForm(
         route: window.location.pathname,
         timezone:
           Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata',
+        ...attribution,
       }),
       signal: controller.signal,
     });
@@ -63,6 +68,7 @@ export async function submitContactForm(
     const result = (await response.json()) as SignupApiResponse;
 
     if (response.ok && result.success) {
+      clearAttribution();
       return {
         success: true,
         message: result.message || 'Your details were submitted successfully.',

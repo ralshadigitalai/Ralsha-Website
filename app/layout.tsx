@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import UtmCapture from '@/components/UtmCapture';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -64,7 +65,10 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <UtmCapture />
+        {children}
+      </body>
     </html>
   );
 }
